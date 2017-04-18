@@ -1,0 +1,1 @@
+Make input categories as challenging as possible by allowing many combinations of available categories to be exponential.
