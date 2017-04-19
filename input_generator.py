@@ -18,7 +18,7 @@ def generate():
         # Dollar limit
         M = val_rand(100, 200)
         # Number of items
-        N = 100
+        N = 1000
         # Number of constraints
         C = 20
 
@@ -41,14 +41,14 @@ def generate():
 
         # Add constraints
         for i in range(C):
-            n = random.randrange(2, class_count // 3)
+            n = random.randrange(2, class_count // 5)
             classes = [random.randrange(class_count) for i in range(n)]
             constraints.append(tuple(set(classes))) # remove duplicates in constraints with set
 
 
 
         ADDITIONAL_ITEMS = 3
-        ADDITIONAL_CONSTRAINTS = class_count
+        ADDITIONAL_CONSTRAINTS = class_count * 3 + 1
         # add items to fool greedy approaches
 
         item_data.sort(key=lambda entry: -(entry[0] - entry[1])/entry[2]) # sort by increasing profit/weight ratio
@@ -62,23 +62,24 @@ def generate():
         # make scale versions of cost and resale based on weight
         greedy_cost = best_cost
         greedy_resale = best_resale
-        greedy_class = class_count + 1
         
         # scaled up version of best item, can only buy one due to weight, slightly better profit/weight ratio
-        greedy_item0 = ['g0', greedy_class, greedy_weight, greedy_cost, greedy_resale]
-        greedy_item1 = ["g1", greedy_class, 0, 0, 1]
-        greedy_item2 = ["g2", greedy_class, 1, 2 * M, 100 * M]
+        greedy_item0 = ['g0', class_count + 1, greedy_weight, greedy_cost, greedy_resale]
+        greedy_item1 = ["g1", class_count + 2, 0, 0, 1]
+        greedy_item2 = ["g2", class_count + 3, 1, 2 * M, 100 * M]
 
         
         # make greedy class constrained against all other class
         greedy_constraints = []
         for c in range(class_count):
-            greedy_constraints.append((greedy_class, c))
+            greedy_constraints.append((class_count + 1, c))
+            greedy_constraints.append((class_count + 2, c))
+            greedy_constraints.append((class_count + 3, c))
         
         f.write(str(P) + "\n") # pounds
         f.write(str(M) + "\n") # dollars
         f.write(str(N + ADDITIONAL_ITEMS) + "\n") # items
-        f.write(str(C + ADDITIONAL_CONSTRAINTS) + "\n") # contraints
+        f.write(str(C + len(greedy_constraints)) + "\n") # constraints
 
         for item in items:
             f.write(", ".join([str(x) for x in item]) + "\n")
@@ -96,4 +97,6 @@ def generate():
         # add greedy constraints
         for constraint in greedy_constraints:
             f.write(", ".join([str(x) for x in constraint]) + "\n")
+        # no greedy classes can join with each other
+        # f.write(", ".join([str(class_count + 1),str(class_count +2), str(class_count + 3)])
 generate()
