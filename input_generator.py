@@ -45,13 +45,13 @@ def generate():
 
 
         
-        f.write(str(P)) # pounds
-        f.write(str(M)) # dollars
-        f.write(str(N)) # items
-        f.write(str(C)) # contraints
+        f.write(str(P) + "\n") # pounds
+        f.write(str(M) + "\n") # dollars
+        f.write(str(N) + "\n") # items
+        f.write(str(C) + "\n") # contraints
 
         for item in items:
-            f.write("; ".join([str(x) for x in item]))
+            f.write("; ".join([str(x) for x in item]) + "\n")
         for constraint in constraints:
             f.write("; ".join([str(x) for x in constraint]))
 generate()
