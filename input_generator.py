@@ -14,9 +14,9 @@ def generate():
     with open('generated_inputs/generated_' + timestamp, 'w') as f:
 
         # Pound limit
-        P = val_rand(100, 200)
+        P = val_rand(1000, 2000)
         # Dollar limit
-        M = val_rand(100, 200)
+        M = val_rand(1000, 2000)
         # Number of items
         N = 1000
         # Number of constraints
@@ -75,6 +75,7 @@ def generate():
             greedy_constraints.append((class_count + 1, c))
             greedy_constraints.append((class_count + 2, c))
             greedy_constraints.append((class_count + 3, c))
+        greedy_constraints.append((class_count + 1, class_count + 2, class_count + 3))
         
         f.write(str(P) + "\n") # pounds
         f.write(str(M) + "\n") # dollars
@@ -82,7 +83,7 @@ def generate():
         f.write(str(C + len(greedy_constraints)) + "\n") # constraints
 
         for item in items:
-            f.write(", ".join([str(x) for x in item]) + "\n")
+            f.write("; ".join([str(x) for x in item]) + "\n")
 
         # add greedy item
         f.write("; ".join([str(x) for x in greedy_item0]) + "\n")
@@ -97,6 +98,4 @@ def generate():
         # add greedy constraints
         for constraint in greedy_constraints:
             f.write(", ".join([str(x) for x in constraint]) + "\n")
-        # no greedy classes can join with each other
-        # f.write(", ".join([str(class_count + 1),str(class_count +2), str(class_count + 3)])
 generate()
