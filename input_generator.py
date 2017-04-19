@@ -47,7 +47,7 @@ def generate():
 
 
 
-        ADDITIONAL_ITEMS = 1
+        ADDITIONAL_ITEMS = 3
         ADDITIONAL_CONSTRAINTS = class_count
         # add items to fool greedy approaches
 
@@ -58,14 +58,16 @@ def generate():
         best_cost = best_item[1]
         best_resale = best_item[0]
        
-        greedy_weight = P//2 + 1
+        greedy_weight = best_weight - 0.01
         # make scale versions of cost and resale based on weight
-        greedy_cost = int(greedy_weight/best_weight * best_cost * 100) / 100.00
-        greedy_resale = int(greedy_weight/best_weight * best_resale * 100) / 100.00 + 0.5
+        greedy_cost = best_cost
+        greedy_resale = best_resale
         greedy_class = class_count + 1
         
         # scaled up version of best item, can only buy one due to weight, slightly better profit/weight ratio
-        greedy_item = ["g", greedy_class, greedy_weight, greedy_cost, greedy_resale]
+        greedy_item0 = ['g0', greedy_class, greedy_weight, greedy_cost, greedy_resale]
+        greedy_item1 = ["g1", greedy_class, 0, 0, 1]
+        greedy_item2 = ["g2", greedy_class, 1, 2 * M, 100 * M]
 
         
         # make greedy class constrained against all other class
@@ -82,9 +84,10 @@ def generate():
             f.write(", ".join([str(x) for x in item]) + "\n")
 
         # add greedy item
-        f.write("; ".join([str(x) for x in greedy_item]) + "\n")
+        f.write("; ".join([str(x) for x in greedy_item0]) + "\n")
+        f.write("; ".join([str(x) for x in greedy_item1]) + "\n")
+        f.write("; ".join([str(x) for x in greedy_item2]) + "\n")
 
-        print(P, M, N, C, greedy_item)
 
         
         for constraint in constraints:
