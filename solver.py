@@ -19,13 +19,14 @@ class Item:
     """
     Object version of item for ease of use and future features
     """
-    def __init__(self, lst):
+    def __init__(self, lst, constraints):
         self.name = lst[0]
         self.cls = lst[1]
         self.weight = lst[2]
         self.cost = lst[3]
         self.resell = lst[4]
         self.profit = self.resell - self.cost
+        self.constraint_count = len(constraints) if constraints else 0
 
     def __str__(self):
         return "Name: " + self.name + "\tClass: " + str(self.cls) + "\tWeight: " + str(self.weight) + "\tCost: " + str(self.cost) + "\tProfit: " + str(round(self.profit,2))
@@ -59,10 +60,22 @@ class Heuristic:
     def h6(item):
         return item.profit/((item.cost + 0.01) * (item.weight + 1))
 
-    canon_lst = [h0, h1, h2, h3, h4, h5, h6]
+    def h7(item):
+        return item.profit/(item.constraint_count + 1)
+
+
+    def h8(item):
+        return item.profit/((item.constraint_count + 1) * (item.cost + 0.01))
+
+    def h9(item):
+        return item.profit/((item.constraint_count + 1) * (item.weight + 1))
+
+    def h10(item):
+        return item.profit/((item.cost + 0.01) *(item.constraint_count + 1) * (item.weight + 1))
+    canon_lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10]
 
     def a0(item):
-        return math.log(item.profit)
+        return 1/(1 + item.constraint_count)
 
     def a1(item):
         return item.profit
@@ -94,7 +107,7 @@ class Heuristic:
   #  def a10(item):
    #     return math.sqrt(1/(1+ math.log(item.weight + 0.01)))
 
-    lst = [a1,a2,a3,a4,a5,a7,a8,a9] # override
+    lst = [a0,a1,a3,a4,a5,a7,a8,a9] # override
 
 new_h = Heuristic.canon_lst[:]
 
@@ -107,10 +120,10 @@ def recursive_reapply(depth, func, min_idx=0 ):
     else:
         for i in range(min_idx, len(Heuristic.lst)):
             recursive_reapply(depth-1, multiplied(Heuristic.lst[i], func), min_idx+1)
-    
-d = 2
+
+reapp_depth = 0
 for h in Heuristic.canon_lst:
-    recursive_reapply(d, h, min_idx=3)
+    recursive_reapply(reapp_depth, h, min_idx=3)
 #for i in range(len(Heuristic.lst)):
 #    for j in range(i, len(Heuristic.lst)):
 #        f = multiplied(i, j)
@@ -120,7 +133,7 @@ def weighted(weights):
     def h(item):
         output = 0
         for i in range(len(weights)):
-            output += weights[i] * Heuristic.lst[i](item)
+            output += weights[i] * Heuristic.canon_lst[i](item)
         return output
     return h
 
@@ -134,10 +147,12 @@ def recursive_weight_gen(depth):
             output.append(f + [w])
     return output
 
-for weights in recursive_weight_gen(3): # len(Heuristic.lst)):
+for weights in recursive_weight_gen(3): #len(Heuristic.canon_lst)):
     new_h.append(weighted(weights))
 
+Heuristic.lst.extend(Heuristic.canon_lst)
 Heuristic.lst.extend(new_h)
+
 
 def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraint_map=None, item_list=list()):
     """
@@ -163,7 +178,8 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
     def create_item_objects():
         lst = []
         for i in items:
-            item = Item(i)
+            cls = i[1]
+            item = Item(i, constraint_map.get(cls))
             if item.weight <= P and item.cost <= M and item.profit > 0: # add item only if weight and cost within reason
                 lst.append(item)
         print("Finished creating ", len(lst), " valid item objects out of ", len(items), " original items")
@@ -278,6 +294,7 @@ def run_with_heuristics(P, M, N, C, items, constraints):
     for i in range(len(options)):
         option = options[i]
         print("Heuristic " + str(i) + ": \t", str(round(option[1] / max(0.01, best[1]) * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / max(0.01, average) * 100.0, 2)), "% from avg")
+    print ("Best Money " + best[1])
     return best
 
 
@@ -326,5 +343,5 @@ def run_all(is_hard, start=1, end=None, fill_missing=False):
         print('\t'.join(summary))
 
 is_hard = 1 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, fill_missing=True)
+run_all(is_hard)
 
