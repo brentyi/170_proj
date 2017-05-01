@@ -5,6 +5,7 @@ import argparse
 from decimal import *
 import math
 import time
+import sys
 getcontext().prec = 2
 
 """
@@ -44,133 +45,99 @@ class Heuristic:
         return item.profit/(item.weight + 1) # add 1 to avoid div by zero error
 
     def h2(item):
-        return Heuristic.h0(item) * Heuristic.h1(item)
-
-    def h3(item):
-        return Heuristic.h0(item) + Heuristic.h1(item)
-
-    def h4(item):
-        return Heuristic.h0(item) + 2 * Heuristic.h1(item)
-
-    def h5(item):
-        return 2 * Heuristic.h0(item) + Heuristic.h1(item)
-
-    def h6(item):
         return item.profit/(1 +math.log(item.weight + 1))
 
-    def h7(item):
+    def h3(item):
         return math.log(item.profit + 1)/(item.weight + 1)
 
-    def h8(item):
+    def h4(item):
         return item.profit**2/(item.cost + 0.01) # add 0.01 for 0 cost items
 
-    def h9(item):
+    def h5(item):
         return item.profit**2/(item.weight + 1) # add 1 to avoid div by zero error
 
-    def h10(item):
-        return item.profit**2/((item.weight + 1) * (item.cost + 0.01)) # add 1 to avoid div by zero error
+    def h6(item):
+        return item.profit/((item.cost + 0.01) * (item.weight + 1))
 
-    def h11(item):
-        return Heuristic.h0(item) + Heuristic.h6(item)
+    canon_lst = [h0, h1, h2, h3, h4, h5, h6]
 
-    def h12(item):
-        return Heuristic.h0(item) + Heuristic.h9(item)
+    def a0(item):
+        return math.log(item.profit)
 
-
-    lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]
-
-def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=None):
-    """
-    Write your amazing algorithm here.
-
-    constraints_map:  key: a class; value: set of incompatible classes
-    item_list: list of item objects
-
-    Return: a list of strings, corresponding to item names.
-    """
-    invalid_classes = set()     # classes that are constrained by what you've selected
-    items_chosen = []
-
-    def create_constraints():
-        constraint_counter = 0
-        timeout = time.time() + 20
-        for c in constraints:
-            constraint_counter += 1
-            for cls in c:
-                if time.time() > timeout:
-                    print("Create constraints failure")
-                    raise RuntimeError()
-                if not cls in constraints_map:
-                    constraints_map[cls] = set()
-                # constraints_map[cls].update(({v for v in c if v != cls}))
-                constraints_map[cls].update(c)
-                constraints_map[cls].remove(cls)
-        return True
-        print("Created ", constraint_counter, " constraints.")
-
-    def create_item_objects():
-        lst = []
-        for i in items:
-            item = Item(i)
-            if item.weight <= P and item.cost <= M and item.profit > 0: # add item only if weight and cost within reason
-                lst.append(item)
-        print("Finished creating ", len(lst), " valid item objects out of ", len(items), " original items")
-        return lst
-
-    def sort_item_objects(lst):
-        item_list = sorted(lst, key=heuristic)
-        # print("Finished sorting items")
-        item_list.reverse()
-        return item_list
-
-    def print_items(lst, num_show=10):
-        for i in range(num_show):
-            print(item_list[i], "\tHeuristic Value: " + str(heuristic(item_list[i])))
-
-    def select_item(item):
-        if item.cls not in invalid_classes and item.weight <= P and item.cost < M:
-            incompat = constraints_map.get(item.cls) 
-            if incompat:
-                invalid_classes.update(incompat)
-
-            # print("Selected item ", counter, "\t", item)
-            return item
-        else:
-            # print("Didn't select item ", counter, "\t", item)
-            return None
-
-
-    if constraints_map == None:
-        constraints_map = dict()
-        create_constraints()
-    # else:
-    #     print("Reuse old constraint map")
-
-    if item_list == None:
-        item_list = create_item_objects()
-    # else:
-    #     print("Reuse old item list")
-
-    # must resort items based on heuristic each time..
-    item_list = sort_item_objects(item_list)
-
-    counter = 0
-    hundreth = len(item_list)//100
-    for item in item_list:
-        selected_item = select_item(item)
-        if selected_item:
-            items_chosen.append(selected_item)
-            P -= selected_item.weight
-            M -= selected_item.cost
-        counter +=1
-        if(hundreth == 0 or counter % hundreth == 0):
-            print(".", end="")
-    print("")
+    def a1(item):
+        return item.profit
     
-    names = [item.name for item in items_chosen]
-    net_money = M + sum([item.resell for item in items_chosen])
+    def a2(item):
+        return math.sqrt(item.profit)
 
-    return net_money, names, constraints_map, item_list
+    def a3(item):
+        return 1/ (item.cost +0.01)
+
+    def a4(item):
+        return 1/ (1 + math.log(item.cost + 0.01))
+
+    def a5(item):
+        return math.sqrt(1/(item.cost + 0.01))
+    
+#    def a6(item):
+ #       return math.sqrt(1/(1+ math.log(item.cost + 0.01)))
+
+    def a7(item):
+        return 1/ (item.weight +0.01)
+
+    def a8(item):
+        return 1/(1+math.log(item.weight + 0.01))
+
+    def a9(item):
+        return math.sqrt(1/(item.weight + 0.01))
+    
+  #  def a10(item):
+   #     return math.sqrt(1/(1+ math.log(item.weight + 0.01)))
+
+    lst = [a1,a2,a3,a4,a5,a7,a8,a9] # override
+
+new_h = Heuristic.canon_lst[:]
+
+def multiplied(i, j):
+    return lambda item: i(item) * j(item)
+
+def recursive_reapply(depth, func, min_idx=0 ):
+    if depth == 0:
+        new_h.append(func)
+    else:
+        for i in range(min_idx, len(Heuristic.lst)):
+            recursive_reapply(depth-1, multiplied(Heuristic.lst[i], func), min_idx+1)
+    
+d = 2
+for h in Heuristic.canon_lst:
+    recursive_reapply(d, h, min_idx=3)
+#for i in range(len(Heuristic.lst)):
+#    for j in range(i, len(Heuristic.lst)):
+#        f = multiplied(i, j)
+#        new_h.append(f)
+#
+def weighted(weights):
+    def h(item):
+        output = 0
+        for i in range(len(weights)):
+            output += weights[i] * Heuristic.lst[i](item)
+        return output
+    return h
+
+def recursive_weight_gen(depth):
+    if depth == 0:
+        return [[]]
+    output = []
+    following = recursive_weight_gen(depth - 1)
+    for w in [0, 0.5, 1]:
+        for f in following:
+            output.append(f + [w])
+    return output
+
+for weights in recursive_weight_gen(3): # len(Heuristic.lst)):
+    new_h.append(weighted(weights))
+
+Heuristic.lst.extend(new_h)
 
 def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraint_map=None, item_list=list()):
     """
@@ -252,9 +219,8 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
             P -= selected_item.weight
             M -= selected_item.cost
         counter +=1
-        if(hundreth == 0 or counter % hundreth == 0):
-            print(".", end="")
-    print("")
+    print(">", end="")
+    sys.stdout.flush()
 
     names = [item.name for item in items_chosen]
     net_money = M + sum([item.resell for item in items_chosen])
@@ -359,8 +325,6 @@ def run_all(is_hard, start=1, end=None, fill_missing=False):
     for summary in summary_info:
         print('\t'.join(summary))
 
-
-
-is_hard = 0 # 0: run all inputs, 1: run hard inputs
+is_hard = 1 # 0: run all inputs, 1: run hard inputs
 run_all(is_hard, fill_missing=True)
 
