@@ -183,17 +183,17 @@ def read_input(filename):
   constraints: list of sets
   """
     with open(filename) as f:
-        P = float(Decimal(f.readline().strip()))
-        M = float(Decimal(f.readline().strip()))
-        N = int(f.readline().strip())
-        C = int(f.readline().strip())
+        P = float(Decimal(f.readline()))
+        M = float(Decimal(f.readline()))
+        N = int(f.readline())
+        C = int(f.readline())
         items = []
         constraints = []
         for i in range(N):
-            name, cls, weight, cost, val = [s.strip() for s in f.readline().split(";")]
+            name, cls, weight, cost, val = [s for s in f.readline().split(";")]
             items.append((name, int(cls), float(weight), float(cost), float(val)))
         for i in range(C):
-            constraint = set([s.strip() for s in f.readline().split(",")])
+            constraint = set([int(s) for s in f.readline().split(",")])
             constraints.append(constraint)
         return P, M, N, C, items, constraints
 
@@ -253,6 +253,6 @@ def run_all(is_hard, start=1, end=None):
     for summary in summary_info:
         print('\t'.join(summary))
 
-is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=490)
+is_hard = 1 # 0: run all inputs, 1: run hard inputs
+run_all(is_hard, start=1)
 
