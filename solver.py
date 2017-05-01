@@ -254,5 +254,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=100)
+run_all(is_hard, start=592)
 
