@@ -78,7 +78,7 @@ class Heuristic:
 
     lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]
 
-def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=list()):
+def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=None):
     """
     Write your amazing algorithm here.
 
@@ -145,7 +145,7 @@ def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], con
     # else:
     #     print("Reuse old constraint map")
 
-    if not item_list:
+    if item_list == None:
         item_list = create_item_objects()
     # else:
     #     print("Reuse old item list")
@@ -340,5 +340,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=1)
+run_all(is_hard, start=61)
 
