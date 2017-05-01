@@ -76,6 +76,7 @@ class Heuristic:
     def h12(item):
         return Heuristic.h0(item) + Heuristic.h9(item)
 
+
     lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]
 
 def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=None):
@@ -317,28 +318,49 @@ def run_with_heuristics(P, M, N, C, items, constraints):
 
 
 
-def run_all(is_hard, start=1, end=None):
+def run_all(is_hard, start=1, end=None, fill_missing=False):
     if not end:
         end = 21 if is_hard else 980
 
     summary_info = []
-    for c in range(start,end + 1):
-        print("*"*10, "PROBLEM",c,"*"*10)
-        input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
-        output_file = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
-        P, M, N, C, items, constraints = read_input(input_file)
-        # try:
-        items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
-        # except Exception:
-        #     print("Giving up on this one\n")
-        #     continue
-        summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
-        write_output(output_file, items_chosen)
-        print("*"*30 + "\n")
+    if not fill_missing:
+        for c in range(start,end + 1):
+            print("*"*10, "PROBLEM",c,"*"*10)
+            input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
+            output_file = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
+            P, M, N, C, items, constraints = read_input(input_file)
+            # try:
+            items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
+            # except Exception:
+            #     print("Giving up on this one\n")
+            #     continue
+            summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
+            write_output(output_file, items_chosen)
+            print("*"*30 + "\n")
+    else:
+        # only operate on output files that do not exist
+        from pathlib import Path
+
+        for c in range(start,end + 1):
+            supposed_output_path = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
+            output_file = Path(supposed_output_path)
+            if not output_file.is_file():
+                print("*"*10, "REFILLING PROBLEM",c,"*"*10)
+                input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
+                P, M, N, C, items, constraints = read_input(input_file)
+                items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
+                summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
+                write_output(supposed_output_path, items_chosen)
+                print("*"*30 + "\n")
+                
+                
+
 
     for summary in summary_info:
         print('\t'.join(summary))
 
+
+
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=61)
+run_all(is_hard, fill_missing=True)
 
