@@ -132,8 +132,8 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
             # print("Didn't select item ", counter, "\t", item)
             return None
 
-            
-    if not constraints_map:
+
+    if constraints_map == None:
         constraints_map = dict()
         create_constraints()
     # else:
@@ -244,5 +244,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=248)
+run_all(is_hard, start=253)
 
