@@ -112,7 +112,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
 
     def sort_item_objects(lst):
         item_list = sorted(lst, key=heuristic)
-        print("Finished sorting items")
+        # print("Finished sorting items")
         item_list.reverse()
         return item_list
 
@@ -136,13 +136,13 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
     if not constraints_map:
         constraints_map = dict()
         create_constraints()
-    else:
-        print("Reuse old constraint map")
+    # else:
+    #     print("Reuse old constraint map")
 
     if not item_list:
         item_list = create_item_objects()
-    else:
-        print("Reuse old item list")
+    # else:
+    #     print("Reuse old item list")
 
     # must resort items based on heuristic each time..
     item_list = sort_item_objects(item_list)
@@ -201,31 +201,25 @@ def run_with_heuristics(P, M, N, C, items, constraints):
     """ Run each case with each heuristic and pick best one
     """
     print("P", P, "M", M, "N", N, "C", C)
-    h_counter = 0
-
-    max_money = M
-    max_item_list = []
-    max_heuristic = h_counter
 
     # create constraint map and item list to reuse between heuristics
     c_map = None;
     i_list = None;
 
+    options = []
     for h in Heuristic.lst:
         if c_map and i_list:
             money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h, c_map, i_list)
         else:
             money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h)
+        options.append((lst, money, h))
 
-        if money > max_money:
-            max_money = money
-            max_item_list = lst
-            max_heuristic = h
-            print("MAX\t", "Heuristic number", h_counter, "got money:", money)
-        else:
-            print("\t", "Heuristic number", h_counter, "got money:", money)
-        h_counter += 1
-    return max_item_list, max_money, max_heuristic
+    best = max(options, key=lambda x: x[1])
+    average = sum([x[1] for x in options]) / len(Heuristic.lst)
+    for i in range(len(options)):
+        option = options[i]
+        print("Heuristic " + str(i) + ": \t", str(round(option[1] / best[1] * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / average * 100.0, 2)), "% from avg")
+    return best
 
 
 
