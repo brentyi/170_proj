@@ -35,41 +35,47 @@ class Heuristic:
     Heuristic class has a list of functions to pass in as heuristics to compare the
     relative value of two items.
     """
-    def __init__(self):
-        self.lst = [self.h0, self.h1, self.h2, self.h3,self.h4,self.h5,self.h6,self.h7,self.h8,self.h9,self.h10]
 
-    def h0(self, item):
+    def h0(item):
         return item.profit/(item.cost + 0.01) # add 0.01 for 0 cost items
-    
-    def h1(self, item):
+
+    def h1(item):
         return item.profit/(item.weight + 1) # add 1 to avoid div by zero error
 
-    def h2(self, item):
-        return self.h0(item) * self.h1(item)
+    def h2(item):
+        return Heuristic.h0(item) * Heuristic.h1(item)
 
-    def h3(self, item):
-        return self.h0(item) + self.h1(item)
+    def h3(item):
+        return Heuristic.h0(item) + Heuristic.h1(item)
 
-    def h4(self, item):
-        return self.h0(item) + 2 * self.h1(item)
+    def h4(item):
+        return Heuristic.h0(item) + 2 * Heuristic.h1(item)
 
-    def h5(self, item):
-        return 2 * self.h0(item) + self.h1(item)
-        
-    def h6(self, item):
+    def h5(item):
+        return 2 * Heuristic.h0(item) + Heuristic.h1(item)
+
+    def h6(item):
         return item.profit/(1 +math.log(item.weight + 1))
 
-    def h7(self, item):
+    def h7(item):
         return math.log(item.profit + 1)/(item.weight + 1)
-    
-    def h8(self, item):
+
+    def h8(item):
         return item.profit**2/(item.cost + 0.01) # add 0.01 for 0 cost items
-    
-    def h9(self, item):
+
+    def h9(item):
         return item.profit**2/(item.weight + 1) # add 1 to avoid div by zero error
 
-    def h10(self, item):
+    def h10(item):
         return item.profit**2/((item.weight + 1) * (item.cost + 0.01)) # add 1 to avoid div by zero error
+
+    def h11(item):
+        return Heuristic.h0(item) + Heuristic.h6(item)
+
+    def h12(item):
+        return Heuristic.h0(item) + Heuristic.h9(item)
+
+    lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]
 
 def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=list()):
     """
@@ -205,9 +211,7 @@ def run_with_heuristics(P, M, N, C, items, constraints):
     c_map = None;
     i_list = None;
 
-    
-    
-    for h in Heuristic().lst:
+    for h in Heuristic.lst:
         if c_map and i_list:
             money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h, c_map, i_list)
         else:
@@ -235,7 +239,7 @@ def run_all(start=1, end=21):
         output_file = "output/problem" + str(c) + ".out"
         P, M, N, C, items, constraints = read_input(input_file)
         items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
-        summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(best_heuristic), "Best Money: " + str(best_money)])
+        summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
         write_output(output_file, items_chosen)
         print("*"*30)
         print()
