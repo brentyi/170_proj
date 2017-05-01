@@ -240,10 +240,8 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
     #     print("Reuse old item list")
 
     # must resort items based on heuristic each time..
-    print("Sorting...")
     item_list = sort_item_objects(item_list)
 
-    print("Picking items...")
     counter = 0
     hundreth = len(item_list)//100
     for item in item_list:
@@ -342,5 +340,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=251)
+run_all(is_hard, start=1)
 
