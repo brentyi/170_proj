@@ -3,6 +3,7 @@
 from __future__ import division
 import argparse
 from decimal import *
+import math
 getcontext().prec = 2
 
 """
@@ -35,7 +36,7 @@ class Heuristic:
     relative value of two items.
     """
     def __init__(self):
-        self.lst = [self.h0, self.h1, self.h2, self.h3]
+        self.lst = [self.h0, self.h1, self.h2, self.h3,self.h4,self.h5,self.h6,self.h7,self.h8,self.h9,self.h10]
 
     def h0(self, item):
         return item.profit/(item.cost + 0.01) # add 0.01 for 0 cost items
@@ -48,8 +49,27 @@ class Heuristic:
 
     def h3(self, item):
         return self.h0(item) + self.h1(item)
-        
 
+    def h4(self, item):
+        return self.h0(item) + 2 * self.h1(item)
+
+    def h5(self, item):
+        return 2 * self.h0(item) + self.h1(item)
+        
+    def h6(self, item):
+        return item.profit/(1 +math.log(item.weight + 1))
+
+    def h7(self, item):
+        return math.log(item.profit + 1)/(item.weight + 1)
+    
+    def h8(self, item):
+        return item.profit**2/(item.cost + 0.01) # add 0.01 for 0 cost items
+    
+    def h9(self, item):
+        return item.profit**2/(item.weight + 1) # add 1 to avoid div by zero error
+
+    def h10(self, item):
+        return item.profit**2/((item.weight + 1) * (item.cost + 0.01)) # add 1 to avoid div by zero error
 
 def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=list()):
     """
@@ -79,7 +99,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
         lst = []
         for i in items:
             item = Item(i)
-            if item.weight <= P and item.cost <= M: # add item only if weight and cost within reason
+            if item.weight <= P and item.cost <= M and item.profit > 0: # add item only if weight and cost within reason
                 lst.append(item)
         print("Finished creating ", len(lst), " valid item objects out of ", len(items), " original items")
         return lst
@@ -95,7 +115,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
             print(item_list[i], "\tHeuristic Value: " + str(heuristic(item_list[i])))
 
     def select_item(item):
-        if item.cls not in invalid_classes and item.weight <= P and item.cost < M and item.profit > 0:
+        if item.cls not in invalid_classes and item.weight <= P and item.cost < M:
             incompat = constraints_map.get(item.cls) 
             if incompat:
                 invalid_classes.update(incompat)
