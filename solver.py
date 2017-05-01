@@ -90,7 +90,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
     items_chosen = []
 
     def create_constraints():
-        constraint_counter = 1
+        constraint_counter = 0
         for c in constraints:
             constraint_counter += 1
             for cls in c:
@@ -218,7 +218,7 @@ def run_with_heuristics(P, M, N, C, items, constraints):
     average = sum([x[1] for x in options]) / len(Heuristic.lst)
     for i in range(len(options)):
         option = options[i]
-        print("Heuristic " + str(i) + ": \t", str(round(option[1] / best[1] * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / average * 100.0, 2)), "% from avg")
+        print("Heuristic " + str(i) + ": \t", str(round(option[1] / max(0.01, best[1]) * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / max(0.01, average) * 100.0, 2)), "% from avg")
     return best
 
 
@@ -244,5 +244,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard)
+run_all(is_hard, start=248)
 
