@@ -78,7 +78,7 @@ class Heuristic:
 
     lst = [h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]
 
-def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=list()):
+def solve_orig(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraints_map=None, item_list=list()):
     """
     Write your amazing algorithm here.
 
@@ -171,6 +171,97 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
 
     return net_money, names, constraints_map, item_list
 
+def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraint_map=None, item_list=list()):
+    """
+    Write your amazing algorithm here.
+
+    constraints_map:  key: a class; value: set of incompatible classes
+    item_list: list of item objects
+
+    Return: a list of strings, corresponding to item names.
+    """
+    invalid_classes = set()     # classes that are constrained by what you've selected
+    items_chosen = []
+
+    def create_constraint_map():
+        constraint_map = {}
+        for c in constraints:
+            for cls in c:
+                if cls not in constraint_map:
+                    constraint_map[cls] = []
+                constraint_map[cls].append(c)
+        return constraint_map
+
+    def create_item_objects():
+        lst = []
+        for i in items:
+            item = Item(i)
+            if item.weight <= P and item.cost <= M and item.profit > 0: # add item only if weight and cost within reason
+                lst.append(item)
+        print("Finished creating ", len(lst), " valid item objects out of ", len(items), " original items")
+        return lst
+
+    def sort_item_objects(lst):
+        item_list = sorted(lst, key=heuristic)
+        # print("Finished sorting items")
+        item_list.reverse()
+        return item_list
+
+    def print_items(lst, num_show=10):
+        for i in range(num_show):
+            print(item_list[i], "\tHeuristic Value: " + str(heuristic(item_list[i])))
+
+    cls_visited = {}
+    def select_item(item):
+        if (item.cls in cls_visited or item.cls not in invalid_classes) and item.weight <= P and item.cost < M:
+            if item.cls not in cls_visited:
+                if item.cls in constraint_map:
+                    for c in constraint_map[item.cls]:
+                        if item.cls in c:
+                            invalid_classes.update(c)
+                            invalid_classes.remove(item.cls)
+                cls_visited[item.cls] = True
+
+            # print("Selected item ", counter, "\t", item)
+            return item
+        else:
+            # print("Didn't select item ", counter, "\t", item)
+            return None
+
+    # else:
+    #     print("Reuse old constraint map")
+    if constraint_map == None:
+        print("generating constraint map")
+        constraint_map = create_constraint_map()
+
+    if not item_list:
+        item_list = create_item_objects()
+    # else:
+    #     print("Reuse old item list")
+
+    # must resort items based on heuristic each time..
+    print("Sorting...")
+    item_list = sort_item_objects(item_list)
+
+    print("Picking items...")
+    counter = 0
+    hundreth = len(item_list)//100
+    for item in item_list:
+        selected_item = select_item(item)
+        if selected_item:
+            items_chosen.append(selected_item)
+            P -= selected_item.weight
+            M -= selected_item.cost
+        counter +=1
+        if(hundreth == 0 or counter % hundreth == 0):
+            print(".", end="")
+    print("")
+
+    names = [item.name for item in items_chosen]
+    net_money = M + sum([item.resell for item in items_chosen])
+
+    return net_money, names, constraint_map, item_list
+
  
 
 def read_input(filename):
@@ -214,10 +305,7 @@ def run_with_heuristics(P, M, N, C, items, constraints):
 
     options = []
     for h in Heuristic.lst:
-        if c_map and i_list:
-            money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h, c_map, i_list)
-        else:
-            money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h)
+        money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h, c_map, i_list)
         options.append((lst, money, h))
 
     best = max(options, key=lambda x: x[1])
@@ -241,11 +329,11 @@ def run_all(is_hard, start=1, end=None):
         input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
         output_file = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
         P, M, N, C, items, constraints = read_input(input_file)
-        try:
-            items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
-        except Exception:
-            print("Giving up on this one\n")
-            continue
+        # try:
+        items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
+        # except Exception:
+        #     print("Giving up on this one\n")
+        #     continue
         summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
         write_output(output_file, items_chosen)
         print("*"*30 + "\n")
@@ -254,5 +342,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=592)
+run_all(is_hard, start=251)
 
