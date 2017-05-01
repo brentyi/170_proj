@@ -1,0 +1,16 @@
+10
+1000
+6
+6
+hot_chocolate_powder; 0; 0; 150; 100
+white_mocha_powder; 1; 0; 200; 100
+ethiopian_black_coffee; 2; 0; 300; 100
+jasmine_green_tea; 3; 0; 400; 100
+earl_grey_black_tea; 4; 0; 350; 100
+lemon_margherita_mix; 5; 0; 300; 100
+0, 1
+1, 2
+2, 3
+3, 4
+4, 5
+5, 4

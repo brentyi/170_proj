@@ -1,0 +1,23 @@
+100
+200
+15
+4
+smaller_rock; 1; 10; 1; 2
+heavier_rock; 1; 10; 1; 2
+acid; 2; 10; 10; 20
+apple; 3; 1; 2; 5
+bleach; 4; 1; 2; 7
+oranges; 3; 1; 2; 6
+bread; 3; 10; 10; 20
+drugs; 5; 10; 10; 20
+kale; 3; 10; 10; 20
+mosquito; 6; 10; 10; 20
+python; 6; 10; 10; 20
+diamond; 7; 1; 100; 250
+knife; 8; 10; 10; 20
+iphone; 1; 5; 100; 200
+book; 1; 10; 10; 20
+1,2
+2,3,8
+2,4
+6,8

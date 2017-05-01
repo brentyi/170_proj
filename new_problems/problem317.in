@@ -1,0 +1,30 @@
+1000
+300
+23
+3
+blue_gatorade; 0; 250; 30; 600
+red_gatorade; 0; 100; 30; 600
+green_gatorade; 0; 1001; 30; 10000
+yellow_gatorade; 0; 300; 70; 600
+black_gatorade; 1; 400; 60; 500
+gray_gatorade; 1; 600; 300; 1000
+brown_gatorade; 1; 200; 301; 10000
+tall_gatorade; 2; 200; 30; 400
+short_gatorade; 2; 600; 180; 1000
+long_gatorade; 2; 500; 150; 900
+thin_gatorade; 2; 200; 50; 200
+quiet_gatorade; 3; 200; 30; 160
+smooth_gatorade; 3; 600; 30; 260
+tasty_gatorade; 3; 100; 271; 500
+loud_gatorade; 3; 900; 30; 1500
+lazy_gatorade; 4; 300; 30; 630
+energetic_gatorade; 4; 200; 30; 600
+nosey_gatorade; 4; 450; 30; 500
+nice_gatorade; 4; 250; 30; 300
+smart_gatorade; 5; 150; 30; 60
+creative_gatorade; 5; 450; 30; 60
+quick_thinker_gatorade; 5; 150; 150; 30
+athletic_gatorade; 5; 350; 30; 600
+0, 1, 3
+0, 2, 5
+1, 4, 5

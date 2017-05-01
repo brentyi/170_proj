@@ -1,0 +1,88 @@
+600
+1000
+50
+29
+grey_solid_trashcan; 01 ; 60 ; 100 ; 320
+grey_mesh_trashcan; 01  ; 70 ; 110 ; 310
+grey_striped_trashcan; 01  ; 50 ; 90; 320
+grey_dotted_trashcan; 01  ; 50 ; 95 ; 312
+grey_heavy_trashcan; 01  ; 70 ; 115 ; 337
+blue_solid_trashcan; 02 ; 5 ; 100 ; 350
+blue_mesh_trashcan; 02 ; 75 ; 15; 265  
+blue_striped_trashcan; 02  ; 45 ; 200 ; 400
+blue_dotted_trashcan; 02  ; 80 ; 200 ; 500
+blue_heavy_trashcan; 02 ; 15 ; 10 ; 40
+red_solid_trashcan; 03 ; 15 ; 10 ; 250
+red_mesh_trashcan; 03  ; 75 ; 5 ; 105
+red_striped_trashcan; 03  ; 100 ; 25 ; 50
+red_dotted_trashcan; 03  ; 50 ; 7 ; 107
+red_heavy_trashcan; 03  ; 25 ; 2 ; 102
+green_solid_trashcan; 04 ; 75 ; 100 ; 116
+green_mesh_trashcan; 04 ; 15 ; 100 ; 516
+green_striped_trashcan; 04 ; 25 ; 110; 326
+green_dotted_trashcan; 04  ; 10 ; 90 ; 206
+green_heavy_trashcan; 04  ; 150 ; 100 ; 416
+black_solid_trashcan; 05; 25 ; 10 ; 500
+black_mesh_trashcan; 05  ; 75 ; 10 ; 250
+black_striped_trashcan; 05  ; 100 ; 5 ; 150
+black_dotted_trashcan; 05  ; 50 ; 10 ; 110
+black_heavy_trashcan; 05 ; 51 ; 20 ; 135
+purple_solid_trashcan; 11 ; 60 ; 100 ; 310
+purple_mesh_trashcan; 11  ; 70 ; 110 ; 350
+purple_striped_trashcan; 11  ; 50 ; 90; 320
+purple_dotted_trashcan; 11  ; 50 ; 95 ; 312
+purple_heavy_trashcan; 11  ; 70 ; 115 ; 327
+maroon_solid_trashcan; 12 ; 5 ; 100 ; 340
+maroon_mesh_trashcan; 12  ; 75 ; 15; 265  
+maroon_striped_trashcan; 12  ; 45 ; 200 ; 400
+maroon_dotted_trashcan; 12  ; 80 ; 200 ; 500
+maroon_heavy_trashcan; 12 ; 15 ; 10 ; 40
+argyle_solid_trashcan; 13 ; 15 ; 10 ; 250
+argyle_mesh_trashcan; 13  ; 75 ; 5 ; 105
+argyle_striped_trashcan; 13  ; 100 ; 25 ; 50
+argyle_dotted_trashcan; 13  ; 50 ; 7 ; 107
+argyle_heavy_trashcan; 13  ; 25 ; 2 ; 1
+brown_solid_trashcan; 14 ; 75 ; 100 ; 116
+brown_mesh_trashcan; 14 ; 15 ; 100 ; 516
+brown_striped_trashcan; 14 ; 25 ; 110; 326
+brown_dotted_trashcan; 14  ; 10 ; 90 ; 206
+brown_heavy_trashcan; 14  ; 150 ; 100 ; 420
+charcoal_solid_trashcan; 15 ; 25 ; 10 ; 505
+charcoal_mesh_trashcan; 15  ; 75 ; 10 ; 350
+charcoal_striped_trashcan; 15  ; 100 ; 5 ; 150
+charcoal_dotted_trashcan; 15  ; 50 ; 10 ; 120
+charcoal_heavy_trashcan; 15  ; 51 ; 20 ; 130
+00,11
+00,12
+00,13
+00,14
+00,15
+01,11
+01,12
+01,13
+01,14
+01,15
+02,11
+02,12
+02,13
+02,14
+02,15
+03,11
+03,12
+03,13
+03,14
+03,15
+04,11
+04,12
+04,13
+04,14
+04,15
+05,11
+05,12
+05,13
+05,14
+05,15
+01,03,05
+02,04
+11,13,15
+12,14

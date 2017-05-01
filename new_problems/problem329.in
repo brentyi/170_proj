@@ -1,0 +1,18 @@
+100
+100
+10
+4
+magical_banana; 0; 5; 10; 100
+banana; 1; 30; 60; 200
+rotten_banana; 2; 3; 5; 1
+blue_banana; 3; 20; 10; 100
+red_banana; 3; 20; 10; 100
+green_banana; 3; 20; 10; 100
+gold_banana; 4; 50; 50; 250
+black_banana; 5; 60; 40; 200
+white_banana; 5; 55; 40; 250
+gray_banana; 5; 60; 50; 250
+0, 3
+3, 4
+1, 5
+1, 4

@@ -1,0 +1,23 @@
+1023
+1024
+14
+5
+eye_of_agamotto; 0; 128; 128; 200
+scepter; 0; 128; 128; 200
+vision; 0; 128; 128; 200
+tesseract; 0; 128; 128; 200
+aether; 0; 128; 128; 200
+gauntlet; 1; 256; 512; 513
+mjolnir; 2; 512; 256; 16
+vibranium; 3; 1; 38; 38
+adamantium; 4; 2; 56; 256
+batarang; 5; 4; 32; 26
+kryptonite; 6; 8; 64; 64
+spider_web; 7; 16; 128; 256
+claws; 8; 32; 256; 257
+crest; 9; 64; 64; 65
+0, 1
+5, 7
+3, 9
+4, 9
+0, 9

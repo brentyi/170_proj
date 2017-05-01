@@ -1,0 +1,15 @@
+20
+50
+8
+3
+blue_raspberry; 0; 10.3; 50; 60.01
+green_mango; 0; 5.8; 31.23; 45.25
+red_tomato; 1; 7.2; 13.42; 0.70
+white_cauliflower; 1; 5; 10.44; 5.43
+orange_carrot; 1; 17.98; 39.54; 23.87
+espresso_beans; 2; 20; 230.98; 1000
+yellow_banana; 0; 19.30; 45.63; 20.43
+dark_chocolate; 2; 0.5; 50; 60
+0, 1
+0, 2
+1, 2

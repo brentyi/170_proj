@@ -1,0 +1,23 @@
+1000
+1000
+18
+1
+dirty_soap_bar; 0; 120; 100; 300
+ultra_dirty_soap_bar; 0; 200; 100; 900
+muddy_soap_bar; 0; 100; 800; 2500
+stained_soap_bar; 0; 100; 500; 1000
+chipped_soap_bar; 0; 300; 100; 1000
+squished_soap_bar; 0; 700; 100; 2000
+clean_soap_bar; 1; 300; 100; 700
+shiny_soap_bar; 1; 900; 900; 2800
+golden_soap_bar; 1; 300; 300; 1300
+squeaky_soap_bar; 1; 100; 900; 2000
+red_soap_bar; 2; 500; 500; 1500
+blue_soap_bar; 2; 200; 400; 1200
+white_soap_bar; 2; 200; 500; 1300
+black_soap_bar; 2; 800; 100; 1000
+star_shaped_soap_bar; 3; 300; 200; 1400
+balloon_shaped_soap_bar; 3; 700; 100; 2000
+square_shaped_soap_bar; 3; 600; 100; 1100
+twisty_shaped_soap_bar; 3; 200; 900; 3000
+0, 1, 2, 3

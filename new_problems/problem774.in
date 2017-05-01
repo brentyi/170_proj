@@ -1,0 +1,18 @@
+1024
+48
+11
+3
+eye_of_agamotto; 0; 16; 10; 10
+scepter; 0; 16; 10; 10
+vision; 0; 16; 10; 10
+tesseract; 0; 16; 10; 10
+aether; 0; 16; 10; 10
+gauntlet; 1; 512; 42; 41
+mjolnir; 2; 512; 15; 16
+vibranium; 3; 256; 37; 38
+adamantium; 4; 256; 47; 100
+batarang; 5; 128; 25; 26
+kryptonite; 6; 128; 26; 0
+0, 1
+3, 4
+5, 6

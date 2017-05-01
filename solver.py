@@ -156,7 +156,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
             P -= selected_item.weight
             M -= selected_item.cost
         counter +=1
-        if(counter % hundreth == 0):
+        if(hundreth == 0 or counter % hundreth == 0):
             print(".", end="")
     print("")
     
@@ -225,20 +225,24 @@ def run_with_heuristics(P, M, N, C, items, constraints):
 
 
 
-def run_all(start=1, end=21):
+def run_all(is_hard, start=1, end=None):
+    if not end:
+        end = 21 if is_hard else 980
+
     summary_info = []
     for c in range(start,end + 1):
         print("*"*10, "PROBLEM",c,"*"*10)
-        input_file = "hard_inputs/problem" + str(c) + ".in"
-        output_file = "output/problem" + str(c) + ".out"
+        input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
+        output_file = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
         P, M, N, C, items, constraints = read_input(input_file)
         items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
         summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
         write_output(output_file, items_chosen)
-        print("*"*30)
-        print()
+        print("*"*30 + "\n")
 
     for summary in summary_info:
         print('\t'.join(summary))
 
-run_all()
+is_hard = 0 # 0: run all inputs, 1: run hard inputs
+run_all(is_hard)
+

@@ -1,0 +1,18 @@
+1000
+2000
+9
+4
+donuts; 0; 3; 2; 3
+bagels; 0; 4; 2; 4
+rolls; 1; 5; 4; 6
+sandwich_rolls; 1; 7; 6; 9
+bolillo_rolls; 1; 6; 6; 8
+pasteries; 2; 5; 3; 5
+muffins; 2; 4; 4; 5
+sticky_buns; 2; 6; 7; 11
+hot_chocolate; 3; 1; 10; 11
+0, 1
+1, 2
+2, 3
+3, 0
+
