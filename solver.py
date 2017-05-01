@@ -4,6 +4,7 @@ from __future__ import division
 import argparse
 from decimal import *
 import math
+import time
 getcontext().prec = 2
 
 """
@@ -91,14 +92,19 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
 
     def create_constraints():
         constraint_counter = 0
+        timeout = time.time() + 20
         for c in constraints:
             constraint_counter += 1
             for cls in c:
+                if time.time() > timeout:
+                    print("Create constraints failure")
+                    raise RuntimeError()
                 if not cls in constraints_map:
                     constraints_map[cls] = set()
                 # constraints_map[cls].update(({v for v in c if v != cls}))
                 constraints_map[cls].update(c)
                 constraints_map[cls].remove(cls)
+        return True
         print("Created ", constraint_counter, " constraints.")
 
     def create_item_objects():
@@ -235,7 +241,11 @@ def run_all(is_hard, start=1, end=None):
         input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
         output_file = "output/problem" + str(c) + ".out" if is_hard else "new_problems_outputs/problem" + str(c) + ".out"
         P, M, N, C, items, constraints = read_input(input_file)
-        items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
+        try:
+            items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
+        except Exception:
+            print("Giving up on this one\n")
+            continue
         summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
         write_output(output_file, items_chosen)
         print("*"*30 + "\n")
@@ -244,5 +254,5 @@ def run_all(is_hard, start=1, end=None):
         print('\t'.join(summary))
 
 is_hard = 0 # 0: run all inputs, 1: run hard inputs
-run_all(is_hard, start=253)
+run_all(is_hard, start=251)
 
