@@ -150,11 +150,21 @@ def recursive_weight_gen(depth):
 for weights in recursive_weight_gen(3): #len(Heuristic.canon_lst)):
     new_h.append(weighted(weights))
 
-Heuristic.lst.extend(Heuristic.canon_lst)
+
+# commented this out because it's causing duplicate heuristics
+# Heuristic.lst.extend(Heuristic.canon_lst)
 Heuristic.lst.extend(new_h)
 
+print(len(Heuristic.lst), "total heuristics before reducing")
+Heuristic.lst = list(set(Heuristic.lst))
+print(len(Heuristic.lst), "total heuristics after reducing")
 
-def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraint_map=None, item_list=list()):
+heuristic_index_lookup = dict()
+for i in range(len(Heuristic.lst)):
+    heuristic_index_lookup[Heuristic.lst[i]] = i
+
+
+def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constraint_map=None, item_list=None):
     """
     Write your amazing algorithm here.
 
@@ -218,7 +228,7 @@ def solve(P, M, N, C, items, constraints, heuristic=Heuristic().lst[0], constrai
         print("generating constraint map")
         constraint_map = create_constraint_map()
 
-    if not item_list:
+    if item_list == None:
         item_list = create_item_objects()
     # else:
     #     print("Reuse old item list")
@@ -293,11 +303,11 @@ def run_with_heuristics(P, M, N, C, items, constraints):
     average = sum([x[1] for x in options]) / len(Heuristic.lst)
     for i in range(len(options)):
         option = options[i]
-        print("Heuristic " + str(i) + ": \t", str(round(option[1] / max(0.01, best[1]) * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / max(0.01, average) * 100.0, 2)), "% from avg")
+        print("Heuristic " + str(heuristic_index_lookup[option[2]]) + ": \t", str(round(option[1] / max(0.01, best[1]) * 100.0, 2)) + "% of best\t", str(round((option[1] - average) / max(0.01, average) * 100.0, 2)), "% from avg")
     return best
 
 
-def test_heuristics(P, M, N, C, items, constraints, count_money_map):
+def test_heuristics(problem, P, M, N, C, items, constraints, count_money_map):
     """ Test and ranks heuristics in map
     """
     print("P", P, "M", M, "N", N, "C", C)
@@ -309,57 +319,126 @@ def test_heuristics(P, M, N, C, items, constraints, count_money_map):
     options = []
     count = 0
 
-    
+    most_money = 0
+    print("Running", len(Heuristic.lst), "heuristics!")
     for h in Heuristic.lst:
         money, lst, c_map, i_list = solve(P, M, N, C, items, constraints, h, c_map, i_list)
         options.append((lst, money, h, count))
+        if money > most_money:
+            most_money = money
         count += 1
     options.sort(key=lambda k: -k[1])
 
-    for o in range(len(options)):
-        heuristic_index = options[o][3]
-        if heuristic_index not in count_money_map: # if map contains heuristic index
-            count_money_map[heuristic_index] = list()
-        if o > 15:
-            break
-        print("Heuristic ", heuristic_index, " has ranking ", o)
-        count_money_map[heuristic_index].append(15 - o) # use 15 - ranking value; larger values mean better ranking
-    
+    o = 0
+    for lst, money, h, count in options:
+        o += 1
+        ratio = money / most_money
+        # print("Heuristic", count, "has ranking ", o, "and makes", money, "moneys", ratio, "of best")
+        count_money_map[h].append(ratio) # use 15 - ranking value; larger values mean better ranking
 
 
-def sample_prune_heuristics(num_heuristics):
+
+def sample_prune_heuristics(num_heuristics, is_hard):
     """
     Run all generated heuristics on 21 hard files to reduce number of heuristics to be used.
     Then remove heuristics that are not the best
     """
     heuristic_rank_map = dict()
+    for h in Heuristic.lst:
+      heuristic_rank_map[h] = []
 
-    for c in range(1,22): # run sampling over first few 
-        print("*"*10, "PRUNING WITH SAMPLE PROBLEM",c,"*"*10)
-        input_file = "hard_inputs/problem" + str(c) + ".in"
-        P, M, N, C, items, constraints = read_input(input_file)
-        test_heuristics(P, M, N, C, items, constraints, heuristic_rank_map)
-
-    Heuristic.lst =  [Heuristic.lst[i] for i in sorted(range(len(Heuristic.lst)), key=lambda h: sum(heuristic_rank_map[h]) if h in heuristic_rank_map else 0)[-30:]]
-    stats =  [(i,sum(heuristic_rank_map.get(i) if heuristic_rank_map.get(i) else []) )
-        for i in sorted(range(len(Heuristic.lst)), key=lambda h: sum(heuristic_rank_map[h]) if h in heuristic_rank_map else 0)[-30:]]
+    old_lst = Heuristic.lst
 
     def print_stats(stats):
         print("\n\n")
         max_score = max([s[1] for s in stats])
+        print("---")
         for s in stats:
-            index = s[0]
+            h = s[0]
             score = s[1]
-            print("Heuristic", index, "\t", score)
+            if s[1] > 0:
+              print("Heuristic", heuristic_index_lookup[h], "\t", score, heuristic_rank_map[h])
 
         print("\n\n")
         for s in stats:
-            index = s[0]
+            h = s[0]
             score = s[1]
-            print("Heuristic", index, "\t", "*"*((score * 100)//max_score))
+            if s[1] > 0:
+                print("Heuristic", heuristic_index_lookup[h], "\t", "*"*int((score * 100)//max_score))
+        print("---")
+
+    for c in range(1,100): # run sampling over first few 
+        Heuristic.lst = old_lst
+
+        print("*"*10, "PRUNING WITH SAMPLE PROBLEM",c,"*"*10)
+        input_file = ("hard_inputs/problem" if is_hard else "new_problems/problem") + str(c) + ".in"
+        P, M, N, C, items, constraints = read_input(input_file)
+        test_heuristics(c, P, M, N, C, items, constraints, heuristic_rank_map)
+
+
+        old_lst = Heuristic.lst
+        # Heuristic.lst =  [Heuristic.lst[i] for i in sorted(range(len(Heuristic.lst)), key=lambda h: sum(heuristic_rank_map[h]) if h in heuristic_rank_map else 0)[-30:]]
+        # Heuristic.lst = sorted(Heuristic.lst, key=lambda h: -sum(heuristic_rank_map[h]))
+        # stats = [(i,sum(heuristic_rank_map.get(i) if heuristic_rank_map.get(i) else []) )
+        #    for i in sorted(range(len(Heuristic.lst)), key=lambda h: sum(heuristic_rank_map[h]) if h in heuristic_rank_map else 0)[-30:]]
+        # stats = [(h, sum([p[1] for p in heuristic_rank_map[h]])) for h in Heuristic.lst]
+        stats = []
+        # Heuristic.lst = sorted(Heuristic.lst, key=lambda h: -sum([p[1] for p in heuristic_rank_map[h]]))
+        solved_problems = set()
+        def score_heuristic(h):
+          score = 0
+          problem = 1
+          for s in heuristic_rank_map[h]:
+              if problem not in solved_problems and s > 0.995:
+                  score += s
+              problem += 1
+          return score
+
+        to_process = list(Heuristic.lst)
+        while len(to_process) > 0:
+            best = max(to_process, key=lambda h: score_heuristic(h))
+            score = score_heuristic(best)
+
+            # if score == 0 and len(heuristic_rank_map[h]:
+            #     
+
+            to_process.remove(best)
+
+            if score >= 0:
+              problem = 1
+              for s in heuristic_rank_map[best]:
+                  if s > 0.995:
+                      solved_problems.add(problem)
+                  problem += 1
+              stats.append((best, score))
+
+        if len(heuristic_rank_map[Heuristic.lst[0]]) == 10:
+            to_remove = []
+            for h1 in Heuristic.lst:
+                if h1 in to_remove:
+                    continue
+                for h2 in Heuristic.lst:
+                    if h1 == h2:
+                        continue
+                    # mean_error = 0.0
+                    max_error = 0.0
+                    for i in range(10):
+                        error = abs(heuristic_rank_map[h1][i] - heuristic_rank_map[h2][i])
+                        # mean_error += error
+                        max_error = max(max_error, error)
+                    # mean_error /= 10.0
+                    # if mean_error < 0.005:
+                    if max_error < 0.005:
+                        to_remove.append(h2)
+            for h in to_remove:
+                if h in Heuristic.lst:
+                    Heuristic.lst.remove(h)
+
+        print_stats(stats)
+
     print_stats(stats)
-            
-        
+
+
 
 
     # rank_heuristics_array = sorted([sum(v) for v in heuristic_rank_map.values()], key=lambda x: -x)
@@ -384,7 +463,7 @@ def run_all(is_hard, start=1, end=None, fill_missing=False):
             # except Exception:
             #     print("Giving up on this one\n")
             #     continue
-            summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
+            summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(heuristic_index_lookup[best_heuristic]), "Best Money: " + str(best_money)])
             write_output(output_file, items_chosen)
             print("*"*30 + "\n")
     else:
@@ -399,16 +478,23 @@ def run_all(is_hard, start=1, end=None, fill_missing=False):
                 input_file = "hard_inputs/problem" + str(c) + ".in" if is_hard else "new_problems/problem" + str(c) + ".in"
                 P, M, N, C, items, constraints = read_input(input_file)
                 items_chosen, best_money, best_heuristic = run_with_heuristics(P, M, N, C, items, constraints)
-                summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(Heuristic.lst.index(best_heuristic)), "Best Money: " + str(best_money)])
+                summary_info.append(["Problem ", str(c), "Best Heuristic: " + str(heuristic_index_lookup[best_heuristic]), "Best Money: " + str(best_money)])
                 write_output(supposed_output_path, items_chosen)
                 print("*"*30 + "\n")
-                
+
     for summary in summary_info:
         print('\t'.join(summary))
 
-is_hard = 0 # 0: run all inputs, 1: run hard inputs
+
+new_h = list()
+for i in [241,186,38,212,248,0,22,81,95,96,135,155,160]:
+    new_h.append(Heuristic.lst[i])
+Heuristic.lst = new_h
+
+is_hard = 1 # 0: run all inputs, 1: run hard inputs
+
 print("Originally have ", len(Heuristic.lst), "heuristics")
-sample_prune_heuristics(30)
+# sample_prune_heuristics(30, 0)
 print("After pruning, we  have ", len(Heuristic.lst), "heuristics")
-run_all(is_hard)
+run_all(is_hard, start=21)
 
