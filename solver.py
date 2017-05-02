@@ -142,22 +142,18 @@ def recursive_weight_gen(depth):
         return [[]]
     output = []
     following = recursive_weight_gen(depth - 1)
-    for w in [0, 0.5, 1]:
+    for w in [0, 0.3, 0.7, 1]:
         for f in following:
             output.append(f + [w])
     return output
 
-for weights in recursive_weight_gen(3): #len(Heuristic.canon_lst)):
+for weights in recursive_weight_gen(2): #len(Heuristic.canon_lst)):
     new_h.append(weighted(weights))
 
 
 # commented this out because it's causing duplicate heuristics
 # Heuristic.lst.extend(Heuristic.canon_lst)
-Heuristic.lst.extend(new_h)
-
-print(len(Heuristic.lst), "total heuristics before reducing")
-Heuristic.lst = list(set(Heuristic.lst))
-print(len(Heuristic.lst), "total heuristics after reducing")
+Heuristic.lst += new_h
 
 heuristic_index_lookup = dict()
 for i in range(len(Heuristic.lst)):
@@ -486,15 +482,15 @@ def run_all(is_hard, start=1, end=None, fill_missing=False):
         print('\t'.join(summary))
 
 
-new_h = list()
-for i in [241,186,38,212,248,0,22,81,95,96,135,155,160]:
-    new_h.append(Heuristic.lst[i])
-Heuristic.lst = new_h
+# Heuristic.lst = [Heuristic.lst[13]]
+# new_h = list()
+# for i in [241,186,38,212,248,0,22,81,95,96,135,155,160]:
+#     new_h.append(Heuristic.lst[i])
+# Heuristic.lst = new_h
 
 is_hard = 1 # 0: run all inputs, 1: run hard inputs
 
 print("Originally have ", len(Heuristic.lst), "heuristics")
 # sample_prune_heuristics(30, 0)
 print("After pruning, we  have ", len(Heuristic.lst), "heuristics")
-run_all(is_hard, start=21)
-
+run_all(is_hard, start=1)
